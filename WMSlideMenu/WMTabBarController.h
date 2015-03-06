@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  WMTabBarController.h
 //  WMSlideMenu
 //
 //  Created by maginawin on 15-3-6.
@@ -7,9 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "WMMenuTableViewController.h"
 
-@interface ViewController : UIViewController
-
+@interface WMTabBarController : UITabBarController<WMMenuTableViewControllerDelegate>
 
 @end
-
