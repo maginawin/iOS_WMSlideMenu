@@ -10,7 +10,7 @@
 
 @interface WMTabBarController ()
 
-@property (nonatomic, strong) WMMenuTableViewController* mVC;
+@property (nonatomic) CGPoint beganPoint;
 
 @end
 
@@ -26,13 +26,42 @@
 
 - (void)setupBasicViews {
     [self.tabBar setHidden:YES];
-    _mVC = [self.storyboard instantiateViewControllerWithIdentifier:@"idMenuVC"];
-//    _mVC.delegate = self;
-//    [self.view.window addSubview:_mVC.view];
-//    [self.view insertSubview:_mVC.view belowSubview:self.tabBarController.selectedViewController.view];
-//    [self.view insertSubview:_mVC.view atIndex:1];
-//    [self.view addSubview:_mVC.view];
-//    [self.view bringSubviewToFront:self.tabBarController.selectedViewController.view];
+    _beganPoint = CGPointZero;
+    
+}
+
+- (void)setupSelfViewFrameSizeXOffset:(CGFloat)xOffset {
+    [UIView animateWithDuration:0.2 animations:^ {
+        self.view.frame = CGRectMake(xOffset, 0, self.view.frame.size.width, self.view.frame.size.height);
+    }];
+}
+
+#pragma mark - Gesture recognizer
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch* touch = [touches anyObject];
+    _beganPoint = [touch locationInView:self.view];
+
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch* touch = [touches anyObject];
+    CGPoint nowPoint = [touch locationInView:self.view];
+    if (self.view.frame.origin.x >= -20) {
+        CGFloat xOffset = (nowPoint.x - _beganPoint.x);
+        self.view.transform = CGAffineTransformTranslate(self.view.transform, xOffset, 0);
+    }
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (!CGPointEqualToPoint(_beganPoint, CGPointZero)) {
+        if (self.view.frame.origin.x > self.view.frame.size.width / 2) {
+            [self setupSelfViewFrameSizeXOffset:self.view.frame.size.width / 2];
+        } else {
+            [self setupSelfViewFrameSizeXOffset:0];
+        }
+    }
+    _beganPoint = CGPointZero;
 }
 
 - (void)setupSwipeGesture {
@@ -47,23 +76,12 @@
 
 - (void)handleSwipeGesture:(UISwipeGestureRecognizer*)swipeGesture {
     if (swipeGesture.direction == UISwipeGestureRecognizerDirectionRight) {
-        NSLog(@"右");
-        self.selectedViewController.view.frame = CGRectMake(self.view.bounds.size.width / 2, 0, self.view.bounds.size.width, self.view.bounds.size.height);
-    } else if (swipeGesture.direction == UISwipeGestureRecognizerDirectionLeft){
-        NSLog(@"左");
-        self.selectedViewController.view.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+        [self setupSelfViewFrameSizeXOffset:self.view.frame.size.width / 2];
     }
-}
-
-#pragma mark - Menu table view delegate
-
-- (void)menuTableViewController:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    int row = indexPath.row;
-    NSArray* views = [self viewControllers];
-    if (row <= views.count) {
-        self.selectedIndex = row - 1;
+    else if (swipeGesture.direction == UISwipeGestureRecognizerDirectionLeft) {
+        [self setupSelfViewFrameSizeXOffset:0];
     }
-    self.selectedViewController.view.frame = CGRectMake(160, 240, 320, 480);
+    _beganPoint = CGPointZero;
 }
 
 @end

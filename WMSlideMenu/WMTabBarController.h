@@ -7,8 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "WMMenuTableViewController.h"
 
-@interface WMTabBarController : UITabBarController<WMMenuTableViewControllerDelegate>
+@protocol WMTabBarControllerDelegate <NSObject>
+
+@required
+
+- (void)tabBarController:(UIView*)tabBarControllerView swipeGestureRecognizerDirection:(UISwipeGestureRecognizer*)swipeDirection;
+
+@end
+
+@interface WMTabBarController : UITabBarController
+
+@property (nonatomic, weak) id<WMTabBarControllerDelegate> wmTabBarDelegate;
 
 @end
