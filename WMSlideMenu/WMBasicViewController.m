@@ -37,22 +37,12 @@
     _tabBarC.view.frame = self.view.frame;
 }
 
-- (void)setupTabBarFrameSizeX:(CGFloat)xOffset {
-    [UIView animateWithDuration:0.2 animations:^ {
-        _tabBarC.view.frame = CGRectMake(xOffset, 0, self.view.frame.size.width, self.view.frame.size.height);
-    } completion:^ (BOOL animated) {
-       
-    }];
-}
-
-
-
 #pragma mark - Menu delegate
 
 - (void)menuTableViewController:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSInteger row = indexPath.row;
     _tabBarC.selectedIndex = row - 1;
-    [self setupTabBarFrameSizeX:0];
+    [_tabBarC setupSelfViewFrameSizeXOffset:0];
 }
 
 @end

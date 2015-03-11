@@ -8,16 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol WMTabBarControllerDelegate <NSObject>
-
-@required
-
-- (void)tabBarController:(UIView*)tabBarControllerView swipeGestureRecognizerDirection:(UISwipeGestureRecognizer*)swipeDirection;
-
-@end
-
 @interface WMTabBarController : UITabBarController
 
-@property (nonatomic, weak) id<WMTabBarControllerDelegate> wmTabBarDelegate;
+- (void)setupSelfViewFrameSizeXOffset:(CGFloat)xOffset;
 
 @end
